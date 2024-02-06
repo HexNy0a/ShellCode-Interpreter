@@ -1,4 +1,4 @@
-﻿#include <string>
+#include <string>
 #include <fstream>
 #include <windows.h>
 #include <unordered_map>
@@ -25,9 +25,27 @@ DWORD realEBP;
 
 // ———————————————————————————— 不重要的函数 ————————————————————————————
 
-vector<string> ReadShellCode(const char* filePath);
-string GetMnemonic(string asmCode);
-string GetOperands(string asmCode);
+// 读取 ShellCode
+vector<string> ReadShellCode(const char* filePath) {
+    vector<string> asmCodes;
+    ifstream file(filePath);
+    string asmCode;
+    while (getline(file, asmCode)) {
+        asmCodes.push_back(asmCode);
+    }
+    file.close();
+    return asmCodes;
+}
+
+// 提取操作符
+string GetMnemonic(string asmCode) {
+    return asmCode.substr(0, asmCode.find(' '));
+}
+
+// 提取操作数
+string GetOperands(string asmCode) {
+    return asmCode.substr(asmCode.find(' ') + 1);
+}
 
 // ———————————————————————————— 模拟运行指令 ————————————————————————————
 
@@ -185,36 +203,4 @@ __declspec(naked) void Interpreter(...) {
 int main() {
     // 通过解释器运行 ShellCode
     Interpreter((PDWORD)MessageBoxA);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-vector<string> ReadShellCode(const char* filePath) {
-    vector<string> asmCodes;
-    ifstream file(filePath);
-    string asmCode;
-    while (getline(file, asmCode)) {
-        asmCodes.push_back(asmCode);
-    }
-    file.close();
-    return asmCodes;
-}
-
-string GetMnemonic(string asmCode) {
-    return asmCode.substr(0, asmCode.find(' '));
-}
-
-string GetOperands(string asmCode) {
-    return asmCode.substr(asmCode.find(' ') + 1);
 }
